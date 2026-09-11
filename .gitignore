@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Build artifacts & compiled binaries
+**/[Bb]in/
+**/[Oo]bj/
+**/dist/
+!/bin/
+bin/dotnet
+bin/node
+bin/npm
+bin/npx
+*.link
+
+# .NET & NuGet cache
+.dotnet_home/
+.nuget/
+.nuget_packages/
+.local/
+**/[Bb]uild/
+
+# Node dependencies
+node_modules/
+npm-debug.log*
+
+# Local scratch / test files & logs
+scratch/
+*.log
+Library/

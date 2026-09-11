@@ -1,0 +1,36 @@
+{
+  "$type": "Loupedeck.Service.Devices.Loupedeck7Devices.ProfileLayoutMode7, LoupedeckService",
+  "deviceType": "Loupedeck71",
+  "modeName": "System",
+  "workspaces": [
+    {
+      "$type": "Loupedeck.Service.Devices.Loupedeck7Devices.ProfileLayoutWorkspace7, LoupedeckService",
+      "name": "CustomWorkspace",
+      "displayName": "Dialpad Workspace 1",
+      "pressPages": [
+        {
+          "$type": "Loupedeck.Service.Devices.Loupedeck7Devices.ProfileLayoutPage7, LoupedeckService",
+          "name": "ButtonPage",
+          "displayName": "Buttons",
+          "controls": [
+            { "controlId": 0, "pressAction": "Button 1 (Top Left)" },
+            { "controlId": 1, "pressAction": "Button 2 (Top Right)" },
+            { "controlId": 2, "pressAction": "Button 3 (Bottom Left)" },
+            { "controlId": 3, "pressAction": "Button 4 (Bottom Right)" }
+          ]
+        }
+      ],
+      "rotatePages": [
+        {
+          "$type": "Loupedeck.Service.Devices.Loupedeck7Devices.ProfileLayoutPage7, LoupedeckService",
+          "name": "RotaryPage",
+          "displayName": "Rotary Controls",
+          "controls": [
+            { "controlId": 0, "rotateAction": "Large Aluminum Dial (Rotation)" },
+            { "controlId": 1, "rotateAction": "Roller Wheel (Rotation)" }
+          ]
+        }
+      ]
+    }
+  ]
+}

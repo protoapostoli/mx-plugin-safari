@@ -1,0 +1,281 @@
+#!/usr/bin/env bash
+# HomemadeMXDeckControls - Developer Utility for Logitech MX Creative Console
+set -e
+
+PLUGIN_SERVICE_DIR="$HOME/Library/Application Support/Logi/LogiPluginService"
+PLUGINS_DIR="$PLUGIN_SERVICE_DIR/Plugins"
+SETTINGS_INI="$PLUGIN_SERVICE_DIR/LoupedeckSettings.ini"
+LOGS_DIR="$PLUGIN_SERVICE_DIR/Logs/plugin_logs"
+APP_BUNDLE="/Applications/Utilities/LogiPluginService.app"
+
+show_help() {
+    cat << "EOF"
+Usage: mxdev <command> [arguments]
+
+Commands:
+  status                   Display status of LogiPluginService, installed plugins, and devices
+  link <path/to/plugin>    Symlink a custom plugin into LogiPluginService Plugins directory
+  unlink <plugin-name>     Remove symlink of a plugin from LogiPluginService
+  list                     List all currently installed/linked plugins
+  logs [plugin-name]       Tail logs for all plugins or a specific plugin (e.g. mxdev logs VSCode)
+  restart                  Gracefully restart LogiPluginService to reload plugins
+  reload                   Rebuild Safari plugin, clear icon cache, and reload service
+  dev-mode [on|off|status] Check or toggle DeveloperMode in LoupedeckSettings.ini
+  profile <subcommand>     Profile utilities: inspect, list, or unpack (.lp5)
+  help                     Show this help message
+
+Examples:
+  mxdev status
+  mxdev link plugins/mx-custom-starter
+  mxdev logs
+  mxdev dev-mode on
+  mxdev restart
+EOF
+}
+
+cmd_status() {
+    echo "============================================================"
+    echo "  Logitech MX Creative Console - Dev Environment Status"
+    echo "============================================================"
+    
+    echo -n "LogiPluginService App:  "
+    if [ -d "$APP_BUNDLE" ]; then
+        echo "Installed ($APP_BUNDLE)"
+    else
+        echo "NOT FOUND at $APP_BUNDLE"
+    fi
+
+    echo -n "Plugin Service Dir:     "
+    if [ -d "$PLUGIN_SERVICE_DIR" ]; then
+        echo "Found ($PLUGIN_SERVICE_DIR)"
+    else
+        echo "NOT FOUND ($PLUGIN_SERVICE_DIR)"
+    fi
+
+    echo -n "Developer Mode:         "
+    if [ -f "$SETTINGS_INI" ]; then
+        DEV_MODE=$(grep -i "DeveloperMode" "$SETTINGS_INI" || echo "Loupedeck/DeveloperMode=False")
+        echo "$DEV_MODE"
+    else
+        echo "Settings file not found"
+    fi
+
+    echo -n "Active Devices Config:  "
+    if [ -f "$SETTINGS_INI" ]; then
+        grep -E "CurrentApplication|LastSeen" "$SETTINGS_INI" | tr '\n' ' '
+        echo ""
+    fi
+
+    echo ""
+    echo "Installed Plugins in LogiPluginService:"
+    if [ -d "$PLUGINS_DIR" ]; then
+        for p in "$PLUGINS_DIR"/*; do
+            if [ -d "$p" ]; then
+                if [ -L "$p" ]; then
+                    echo "  - [LINKED] $(basename "$p") -> $(readlink "$p")"
+                else
+                    echo "  - [SYSTEM] $(basename "$p")"
+                fi
+            elif [ -f "$p" ]; then
+                echo "  - [FILE]   $(basename "$p")"
+            fi
+        done
+    fi
+    echo "============================================================"
+}
+
+cmd_list() {
+    echo "Installed / Linked Plugins in: $PLUGINS_DIR"
+    ls -la "$PLUGINS_DIR"
+}
+
+cmd_link() {
+    TARGET="$1"
+    if [ -z "$TARGET" ]; then
+        echo "Error: Please specify the directory of the plugin to link." >&2
+        echo "Usage: mxdev link <path/to/plugin-dir>" >&2
+        exit 1
+    fi
+
+    ABS_TARGET="$(cd "$TARGET" 2>/dev/null && pwd || true)"
+    if [ -z "$ABS_TARGET" ] || [ ! -d "$ABS_TARGET" ]; then
+        echo "Error: Plugin directory '$TARGET' does not exist." >&2
+        exit 1
+    fi
+
+    LINK_SOURCE="$ABS_TARGET"
+
+    # Check if there is an assembled plugin in dist/*/metadata/LoupedeckPackage.yaml
+    if [ -d "$ABS_TARGET/dist" ]; then
+        DIST_CANDIDATE=$(find "$ABS_TARGET/dist" -maxdepth 4 -name "LoupedeckPackage.yaml" 2>/dev/null | head -n 1)
+        if [ -n "$DIST_CANDIDATE" ]; then
+            LINK_SOURCE="$(dirname "$(dirname "$DIST_CANDIDATE")")"
+        fi
+    fi
+
+    # Read plugin name from LoupedeckPackage.yaml if present
+    PLUGIN_NAME=""
+    if [ -f "$LINK_SOURCE/metadata/LoupedeckPackage.yaml" ]; then
+        PLUGIN_NAME=$(grep -E '^name:' "$LINK_SOURCE/metadata/LoupedeckPackage.yaml" | awk '{print $2}' | tr -d '\r\n')
+    fi
+
+    if [ -z "$PLUGIN_NAME" ]; then
+        PLUGIN_NAME="$(basename "$LINK_SOURCE")"
+    fi
+
+    DEST="$PLUGINS_DIR/$PLUGIN_NAME"
+
+    if [ -L "$DEST" ] || [ -e "$DEST" ]; then
+        echo "Warning: Destination '$DEST' already exists. Removing previous link..."
+        rm -rf "$DEST"
+    fi
+
+    ln -s "$LINK_SOURCE" "$DEST"
+    echo "Successfully linked '$PLUGIN_NAME'!"
+    echo "  Source: $LINK_SOURCE"
+    echo "  Destination: $DEST"
+    echo ""
+    echo "Tip: Run 'mxdev restart' if LogiPluginService does not immediately pick up the plugin."
+}
+
+cmd_unlink() {
+    PLUGIN_NAME="$1"
+    if [ -z "$PLUGIN_NAME" ]; then
+        echo "Error: Please specify the plugin name to unlink." >&2
+        echo "Usage: mxdev unlink <plugin-name>" >&2
+        exit 1
+    fi
+
+    DEST="$PLUGINS_DIR/$PLUGIN_NAME"
+    if [ -L "$DEST" ]; then
+        rm "$DEST"
+        echo "Successfully unlinked '$PLUGIN_NAME' ($DEST)."
+    elif [ -d "$DEST" ]; then
+        echo "Error: '$DEST' is a real directory, not a symbolic link. Cowardly refusing to remove." >&2
+        exit 1
+    else
+        echo "Error: Plugin '$PLUGIN_NAME' is not linked in $PLUGINS_DIR." >&2
+        exit 1
+    fi
+}
+
+cmd_logs() {
+    SPECIFIC="$1"
+    if [ ! -d "$LOGS_DIR" ]; then
+        echo "Error: Logs directory not found at $LOGS_DIR" >&2
+        exit 1
+    fi
+
+    if [ -n "$SPECIFIC" ]; then
+        LOG_FILE="$LOGS_DIR/$SPECIFIC.log"
+        if [ ! -f "$LOG_FILE" ]; then
+            echo "Log file $LOG_FILE not found. Available logs:"
+            ls -1 "$LOGS_DIR"
+            exit 1
+        fi
+        echo "Tailing logs for $SPECIFIC ($LOG_FILE)..."
+        tail -f "$LOG_FILE"
+    else
+        echo "Tailing recent logs from $LOGS_DIR (Ctrl+C to exit)..."
+        tail -f "$LOGS_DIR"/*.log
+    fi
+}
+
+cmd_restart() {
+    echo "Restarting LogiPluginService..."
+    pkill -f "LogiPluginService" 2>/dev/null || true
+    sleep 1.5
+    # Clear crash markers so plugins are never disabled by shutdown signals
+    rm -rf "$PLUGIN_SERVICE_DIR/Logs/plugin_crashes/"*
+    open -g "$APP_BUNDLE" 2>/dev/null || open "$APP_BUNDLE"
+    echo "LogiPluginService relaunched."
+}
+
+cmd_dev_mode() {
+    ACTION="${1:-status}"
+    if [ ! -f "$SETTINGS_INI" ]; then
+        echo "Error: $SETTINGS_INI not found." >&2
+        exit 1
+    fi
+
+    case "$ACTION" in
+        status)
+            echo "Current DeveloperMode setting:"
+            grep -i "DeveloperMode" "$SETTINGS_INI" || echo "Loupedeck/DeveloperMode=False (not set)"
+            ;;
+        on)
+            echo "Enabling DeveloperMode..."
+            if grep -q "Loupedeck/DeveloperMode" "$SETTINGS_INI"; then
+                sed -i '' 's/Loupedeck\/DeveloperMode=.*/Loupedeck\/DeveloperMode=True/' "$SETTINGS_INI"
+            else
+                echo "Loupedeck/DeveloperMode=True" >> "$SETTINGS_INI"
+            fi
+            echo "DeveloperMode enabled. Restart LogiPluginService to apply ('mxdev restart')."
+            ;;
+        off)
+            echo "Disabling DeveloperMode..."
+            if grep -q "Loupedeck/DeveloperMode" "$SETTINGS_INI"; then
+                sed -i '' 's/Loupedeck\/DeveloperMode=.*/Loupedeck\/DeveloperMode=False/' "$SETTINGS_INI"
+            fi
+            echo "DeveloperMode disabled. Restart LogiPluginService to apply ('mxdev restart')."
+            ;;
+        *)
+            echo "Usage: mxdev dev-mode [on|off|status]" >&2
+            exit 1
+            ;;
+    esac
+}
+
+cmd_profile() {
+    DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+    PYTHON_TOOL="$DIR/tools/profile_tool.py"
+    if [ ! -f "$PYTHON_TOOL" ]; then
+        echo "Error: profile_tool.py not found at $PYTHON_TOOL" >&2
+        exit 1
+    fi
+    python3 "$PYTHON_TOOL" "$@"
+}
+
+case "$1" in
+    status)
+        cmd_status
+        ;;
+    list)
+        cmd_list
+        ;;
+    link)
+        shift
+        cmd_link "$@"
+        ;;
+    unlink)
+        shift
+        cmd_unlink "$@"
+        ;;
+    logs)
+        shift
+        cmd_logs "$@"
+        ;;
+    restart)
+        cmd_restart
+        ;;
+    reload)
+        DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+        exec "$DIR/tools/build-and-restart.sh"
+        ;;
+    dev-mode)
+        shift
+        cmd_dev_mode "$@"
+        ;;
+    profile)
+        shift
+        cmd_profile "$@"
+        ;;
+    help|--help|-h|"")
+        show_help
+        ;;
+    *)
+        echo "Unknown command: $1" >&2
+        show_help
+        exit 1
+        ;;
+esac

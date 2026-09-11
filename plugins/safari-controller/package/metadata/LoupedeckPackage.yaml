@@ -1,0 +1,23 @@
+type: plugin4
+name: Safari
+displayName: Safari Controller
+version: 1.0.0
+description: Professional Safari controller plugin for Logitech MX Creative Console (MX Keypad & Dialpad)
+author: Andrew Hedstrom
+copyright: Copyright © 2026. All rights reserved.
+icon256x256: Icon256x256.png
+minimumLoupedeckVersion: 6.0
+pluginFileName: SafariPlugin.dll
+pluginClassName: Loupedeck.SafariPlugin.SafariPlugin
+pluginFolderMac: .
+pluginFolderWin: .
+capabilities:
+  - MacOnly
+pluginCapabilities:
+  - HasApplication
+  - ActivatesApplication
+applicationPatterns:
+  bundleNamePattern: ^com.apple.Safari$
+supportedDevices:
+  - LoupedeckCtFamily
+  - LoupedeckExtendedFamily

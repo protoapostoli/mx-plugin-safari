@@ -1,0 +1,14 @@
+type: plugin4
+name: CustomPlugin
+displayName: Custom MX Plugin
+version: 1.0.0
+description: Custom C# plugin for Logitech MX Creative Console
+author: Andrew Hedstrom
+copyright: Copyright © 2026. All rights reserved.
+minimumLoupedeckVersion: 6.0
+pluginFileName: CustomPlugin.dll
+pluginFolderMac: .
+pluginFolderWin: .
+supportedDevices:
+    - LoupedeckCtFamily
+    - LoupedeckExtendedFamily
