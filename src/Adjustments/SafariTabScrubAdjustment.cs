@@ -8,8 +8,9 @@ namespace Loupedeck.SafariPlugin.Adjustments
     /// Rotating clockwise switches to next tab; counter-clockwise switches to previous tab.
     /// Pressing the dial closes the current tab.
     /// </summary>
-    public class SafariTabScrubAdjustment : PluginDynamicAdjustment
+    public abstract class SafariTabScrubBaseAdjustment : PluginDynamicAdjustment
     {
+        private readonly Int32 _thresholdTicks;
         private Int32 _accumulatedTicks = 0;
         private DateTime _lastTickTime = DateTime.MinValue;
         private DateTime _lastExecutionTime = DateTime.MinValue;
@@ -18,24 +19,10 @@ namespace Loupedeck.SafariPlugin.Adjustments
         private const Int32 CooldownMs = 120;
         private const Int32 IdleTimeoutMs = 350;
 
-        public SafariTabScrubAdjustment()
-            : base(displayName: "Tab Scrub / Switcher", description: "Rotate dial to cycle tabs. Press dial to close tab.", groupName: "Safari Adjustments", hasReset: true)
+        protected SafariTabScrubBaseAdjustment(String displayName, String description, Int32 thresholdTicks)
+            : base(displayName: displayName, description: description, groupName: "Safari Adjustments", hasReset: true)
         {
-            this.AddParameter("ultra_low", "Ultra Low (~8 ticks / tab)", "Sensitivity");
-            this.AddParameter("low", "Low (~5 ticks / tab)", "Sensitivity");
-            this.AddParameter("medium", "Medium (~3 ticks / tab)", "Sensitivity");
-            this.AddParameter("direct", "Direct (1 tick / tab)", "Sensitivity");
-        }
-
-        private Int32 GetThreshold(String actionParameter)
-        {
-            return actionParameter switch
-            {
-                "direct" => 1,
-                "medium" => 3,
-                "low" => 5,
-                _ => 8 // Default to "ultra_low" (~8 ticks per tab)
-            };
+            this._thresholdTicks = Math.Max(1, thresholdTicks);
         }
 
         protected override void ApplyAdjustment(String actionParameter, Int32 diff)
@@ -56,10 +43,9 @@ namespace Loupedeck.SafariPlugin.Adjustments
             }
 
             this._accumulatedTicks += diff;
-            var threshold = this.GetThreshold(actionParameter);
 
             // Check if threshold reached
-            if (Math.Abs(this._accumulatedTicks) < threshold)
+            if (Math.Abs(this._accumulatedTicks) < this._thresholdTicks)
             {
                 return;
             }
@@ -106,11 +92,79 @@ namespace Loupedeck.SafariPlugin.Adjustments
 
         protected override void RunCommand(String actionParameter)
         {
-            // Dial press action: Close current tab
             SafariAppleScript.CloseActiveTab();
             PluginLog.Info("[SafariTabScrub] Dial pressed: closed active tab.");
         }
 
         protected override String GetAdjustmentValue(String actionParameter) => "Tabs";
+    }
+
+    /// <summary>
+    /// Default Tab Scrub adjustment (Ultra Low ~20 ticks).
+    /// </summary>
+    public class SafariTabScrubAdjustment : SafariTabScrubBaseAdjustment
+    {
+        public SafariTabScrubAdjustment()
+            : base(
+                displayName: "Tab Scrub / Switcher",
+                description: "Rotate dial to cycle tabs (~20 ticks/tab, anti-spin). Press dial to close tab.",
+                thresholdTicks: 20)
+        {
+        }
+    }
+
+    public class SafariTabScrubUltraLowAdjustment : SafariTabScrubBaseAdjustment
+    {
+        public SafariTabScrubUltraLowAdjustment()
+            : base(
+                displayName: "Tab Scrub (Ultra Low)",
+                description: "Requires ~20 encoder ticks to switch 1 tab. Maximum dampening, eliminates runaway spin.",
+                thresholdTicks: 20)
+        {
+        }
+    }
+
+    public class SafariTabScrubVeryLowAdjustment : SafariTabScrubBaseAdjustment
+    {
+        public SafariTabScrubVeryLowAdjustment()
+            : base(
+                displayName: "Tab Scrub (Very Low)",
+                description: "Requires ~8 encoder ticks to switch 1 tab. Heavy resistance for deliberate tab browsing.",
+                thresholdTicks: 8)
+        {
+        }
+    }
+
+    public class SafariTabScrubLowAdjustment : SafariTabScrubBaseAdjustment
+    {
+        public SafariTabScrubLowAdjustment()
+            : base(
+                displayName: "Tab Scrub (Low)",
+                description: "Requires ~5 encoder ticks to switch 1 tab. Moderate resistance.",
+                thresholdTicks: 5)
+        {
+        }
+    }
+
+    public class SafariTabScrubMediumAdjustment : SafariTabScrubBaseAdjustment
+    {
+        public SafariTabScrubMediumAdjustment()
+            : base(
+                displayName: "Tab Scrub (Medium)",
+                description: "Requires ~3 encoder ticks to switch 1 tab. Light resistance.",
+                thresholdTicks: 3)
+        {
+        }
+    }
+
+    public class SafariTabScrubDirectAdjustment : SafariTabScrubBaseAdjustment
+    {
+        public SafariTabScrubDirectAdjustment()
+            : base(
+                displayName: "Tab Scrub (Direct)",
+                description: "Direct 1:1 hardware pass-through (1 tick per tab).",
+                thresholdTicks: 1)
+        {
+        }
     }
 }

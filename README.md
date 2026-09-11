@@ -15,8 +15,8 @@ A dedicated native plugin and pre-configured application profile for the **Logit
 
 - 🔤 **Giant Marquee Active Tab Display**: The center LCD key displays the active Safari tab title in giant, vertically centered text with no clutter or border boxes. When titles exceed the key width, text scrolls smoothly in a readable loop.
 - 📋 **Tap-to-Copy URL**: Tap the center key anytime to copy the active webpage URL straight to your clipboard with visual green confirmation.
-- 🎛 **Precision Tab Scrubbing & Anti-Spin Protection**: Rotate the aluminum dial to cycle open tabs with heavy deceleration and process throttling (no runaway spinning). Sensitivity presets: *Ultra Low* (default), *Low*, *Medium*, and *Direct*. Press dial to close tab.
-- 📜 **Smooth Roller Scrolling**: Roll the tactile wheel for natural vertical webpage scrolling with configurable sensitivity presets (*Gentle*, *Normal*, *Fast*, *Page by Page*).
+- 🎛 **Precision Tab Scrubbing & Anti-Spin Protection**: Rotate the aluminum dial to cycle open tabs with heavy deceleration and process throttling (no runaway spinning). 5 selectable tiers in Logi Options+: *Ultra Low* (~20 ticks/tab, default), *Very Low* (~8 ticks/tab), *Low* (~5 ticks/tab), *Medium* (~3 ticks/tab), and *Direct* (1 tick/tab). Press dial to close tab.
+- 📜 **Smooth Roller Scrolling**: Roll the tactile wheel for natural vertical webpage scrolling with 4 selectable tiers in Logi Options+: *Gentle* (1 line/tick, default), *Normal* (3 lines/tick), *Fast* (6 lines/tick), and *Page by Page* (Page Up/Down).
 - 📑 **Instant Bookmarks & Reading List**: One-touch access to toggle your Safari Bookmarks sidebar (`Cmd+Ctrl+1`) and Reading List (`Cmd+Ctrl+2`).
 - ⚡ **Native Safari Shortcuts**: Dedicated keys for Tab Duplication, Reader Mode (`Cmd+Shift+R`), Reopen Closed Tab (`Cmd+Shift+T`), History Navigation, and Page Reload.
 
@@ -56,8 +56,8 @@ A dedicated native plugin and pre-configured application profile for the **Logit
 
 | Control | Action | Description |
 | :--- | :--- | :--- |
-| **Aluminum Dial** | Rotate Left / Right | Scrub & switch between open tabs (*Ultra Low* default; press to close tab) |
-| **Roller Wheel** | Roll Up / Down | Vertical webpage scrolling (*Gentle* default) |
+| **Aluminum Dial** | Rotate Left / Right | Tab Scrubbing (*Ultra Low ~20 ticks* default; choices: Ultra Low, Very Low, Low, Medium, Direct; press to close tab) |
+| **Roller Wheel** | Roll Up / Down | Webpage scrolling (*Gentle* default; choices: Gentle, Normal, Fast, Page by Page) |
 | **Top-Left Button (0)** | Press | Reopen last closed tab (`Cmd+Shift+T`) |
 | **Top-Right Button (1)** | Press | Open new tab (`Cmd+T`) |
 | **Bottom-Left Button (2)** | Press | Toggle Bookmarks sidebar (`Cmd+Ctrl+1`) |
