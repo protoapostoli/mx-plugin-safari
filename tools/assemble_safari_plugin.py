@@ -7,12 +7,16 @@ ready to be linked or copied to LogiPluginService/Plugins/Safari.
 import os
 import shutil
 from pathlib import Path
+import generate_safari_profiles
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SRC_DIR = BASE_DIR / "src"
 DIST_PLUGIN = BASE_DIR / "dist" / "Safari"
 
 def assemble():
+    # 0. Regenerate application profiles
+    generate_safari_profiles.main()
+
     print(f"Assembling Safari plugin into: {DIST_PLUGIN}")
     if DIST_PLUGIN.exists():
         shutil.rmtree(DIST_PLUGIN)

@@ -5,12 +5,10 @@ namespace Loupedeck.SafariPlugin.Adjustments
 
     /// <summary>
     /// Precision roller adjustment for the MX Dialpad Roller Wheel (rotatePages: 1).
-    /// Stepped smooth scrolling up and down via injected JavaScript.
+    /// Native stepped scrolling up and down via AppleScript System Events.
     /// </summary>
     public class SafariScrollAdjustment : PluginDynamicAdjustment
     {
-        private const Int32 ScrollStepPixels = 75;
-
         public SafariScrollAdjustment()
             : base(displayName: "Precise Page Scroll", description: "Smoothly scrolls the current Safari webpage up or down", groupName: "Safari Adjustments", hasReset: false)
         {
@@ -18,8 +16,7 @@ namespace Loupedeck.SafariPlugin.Adjustments
 
         protected override void ApplyAdjustment(String actionParameter, Int32 diff)
         {
-            var pixels = diff * ScrollStepPixels;
-            SafariAppleScript.ScrollBy(pixels);
+            SafariAppleScript.Scroll(diff);
         }
 
         protected override String GetAdjustmentValue(String actionParameter) => "Scroll";

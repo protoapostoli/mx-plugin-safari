@@ -45,17 +45,31 @@ namespace Loupedeck.SafariPlugin.Actions
         }
     }
 
-    public class SafariBookmarkletCommand : PluginDynamicCommand
+    public class SafariBookmarksSidebarCommand : PluginDynamicCommand
     {
-        public SafariBookmarkletCommand()
-            : base(displayName: "Clean Reader (De-Clutter)", description: "Strips ads, modal popups, cookie overlays, and fixed banners", groupName: "Safari Controls")
+        public SafariBookmarksSidebarCommand()
+            : base(displayName: "Open Bookmarks", description: "Opens or toggles the Safari Bookmarks sidebar (Cmd+Ctrl+1)", groupName: "Safari Controls")
         {
         }
 
         protected override void RunCommand(String actionParameter)
         {
-            SafariAppleScript.CleanReaderDeClutter();
-            PluginLog.Info("[Safari] Clean Reader / De-Clutter bookmarklet executed.");
+            SafariAppleScript.OpenBookmarksSidebar();
+            PluginLog.Info("[Safari] Bookmarks sidebar opened.");
+        }
+    }
+
+    public class SafariReadingListSidebarCommand : PluginDynamicCommand
+    {
+        public SafariReadingListSidebarCommand()
+            : base(displayName: "Open Reading List", description: "Opens or toggles the Safari Reading List sidebar (Cmd+Ctrl+2)", groupName: "Safari Controls")
+        {
+        }
+
+        protected override void RunCommand(String actionParameter)
+        {
+            SafariAppleScript.OpenReadingListSidebar();
+            PluginLog.Info("[Safari] Reading List sidebar opened.");
         }
     }
 

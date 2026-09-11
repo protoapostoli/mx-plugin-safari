@@ -128,7 +128,7 @@ def build_profile_70(out_dir: Path, device_type: str = "Loupedeck70", profile_gu
                                         {
                                             "$type": "Loupedeck.Service.Devices.Loupedeck7Devices.ProfileLayoutControl7, LoupedeckService",
                                             "controlId": 3,
-                                            "pressAction": "$Safari___Loupedeck.SafariPlugin.Actions.SafariBookmarkletCommand",
+                                            "pressAction": "$Safari___Loupedeck.SafariPlugin.Actions.SafariBookmarksSidebarCommand",
                                             "rotateAction": None
                                         },
                                         {
@@ -281,7 +281,7 @@ def build_profile_71(out_dir: Path):
                                         {
                                             "$type": "Loupedeck.Service.Devices.Loupedeck7Devices.ProfileLayoutControl7, LoupedeckService",
                                             "controlId": 2,
-                                            "pressAction": "$Safari___Loupedeck.SafariPlugin.Actions.SafariBookmarkletCommand",
+                                            "pressAction": "$Safari___Loupedeck.SafariPlugin.Actions.SafariBookmarksSidebarCommand",
                                             "rotateAction": None
                                         },
                                         {

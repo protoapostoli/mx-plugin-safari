@@ -33,14 +33,7 @@ namespace Loupedeck.SafariPlugin.Helpers
 
                 if (!String.IsNullOrEmpty(error))
                 {
-                    if (error.Contains("Allow JavaScript from Apple Events") || error.Contains("(8)"))
-                    {
-                        PluginLog.Warning("Safari blocked JavaScript execution: Please enable 'Develop > Allow JavaScript from Apple Events' in Safari.");
-                    }
-                    else
-                    {
-                        PluginLog.Warning($"AppleScript stderr: {error}");
-                    }
+                    PluginLog.Warning($"AppleScript stderr: {error}");
                 }
 
                 return output;
@@ -186,22 +179,15 @@ end tell");
             RunAppleScript(@"tell application ""System Events"" to keystroke ""0"" using command down");
         }
 
-        public static void ScrollBy(Int32 pixels)
+        public static void Scroll(Int32 diff)
         {
-            var js = $"window.scrollBy({{ top: {pixels}, behavior: 'smooth' }});";
-            RunJavaScript(js);
-        }
-
-        public static void RunJavaScript(String jsCode)
-        {
-            var escapedJs = jsCode.Replace("\\", "\\\\").Replace("\"", "\\\"");
-            var script = $@"
-tell application ""Safari""
-    if (count of windows) > 0 then
-        do JavaScript ""{escapedJs}"" in current tab of front window
-    end if
-end tell";
-            RunAppleScript(script);
+            var keyCode = diff > 0 ? 125 : 126; // 125: Down Arrow, 126: Up Arrow
+            var repeatCount = Math.Min(Math.Max(Math.Abs(diff), 1) * 3, 15);
+            RunAppleScript($@"tell application ""System Events""
+    repeat {repeatCount} times
+        key code {keyCode}
+    end repeat
+end tell");
         }
 
         public static void ToggleReaderMode()
@@ -209,30 +195,16 @@ end tell";
             RunAppleScript(@"tell application ""System Events"" to keystroke ""r"" using {command down, shift down}");
         }
 
-        public static void CleanReaderDeClutter()
+        public static void OpenBookmarksSidebar()
         {
-            // Selected bookmarklet: Clean Reader / De-Clutter
-            // Strips fixed/sticky overlays, banners, popups, cookie consent overlays, floating headers, and expands content
-            var deClutterJs = @"(function() {
-                var elements = document.querySelectorAll('*');
-                for (var i = 0; i < elements.length; i++) {
-                    var el = elements[i];
-                    var style = window.getComputedStyle(el);
-                    if (style.position === 'fixed' || style.position === 'sticky') {
-                        if (el.offsetHeight < 300 || el.offsetWidth < 400 || el.innerText.toLowerCase().includes('cookie') || el.innerText.toLowerCase().includes('subscribe')) {
-                            el.remove();
-                        }
-                    }
-                }
-                var dialogs = document.querySelectorAll('dialog, [role=""dialog""], [role=""alertdialog""], .modal, .popup, #cookie-banner');
-                for (var j = 0; j < dialogs.length; j++) {
-                    dialogs[j].remove();
-                }
-                document.body.style.overflow = 'auto';
-                document.documentElement.style.overflow = 'auto';
-            })();";
+            RunAppleScript(@"tell application ""Safari"" to activate
+tell application ""System Events"" to keystroke ""1"" using {command down, control down}");
+        }
 
-            RunJavaScript(deClutterJs);
+        public static void OpenReadingListSidebar()
+        {
+            RunAppleScript(@"tell application ""Safari"" to activate
+tell application ""System Events"" to keystroke ""2"" using {command down, control down}");
         }
     }
 }

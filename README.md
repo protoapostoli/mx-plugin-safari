@@ -17,7 +17,7 @@ A dedicated native plugin and pre-configured application profile for the **Logit
 - 📋 **Tap-to-Copy URL**: Tap the center key anytime to copy the active webpage URL straight to your clipboard with visual green confirmation.
 - 🎛 **Precision Tab Scrubbing**: Rotate the aluminum dial to swiftly scrub and cycle between open Safari tabs.
 - 📜 **Smooth Roller Scrolling**: Roll the tactile wheel for natural vertical scrolling up and down long webpages.
-- 🧹 **Clean Reader / De-Clutter**: Instantly strip newsletter popups, cookie consent overlays, paywall modals, and sticky headers with a single keypress.
+- 📑 **Instant Bookmarks & Reading List**: One-touch access to toggle your Safari Bookmarks sidebar (`Cmd+Ctrl+1`) and Reading List (`Cmd+Ctrl+2`).
 - ⚡ **Native Safari Shortcuts**: Dedicated keys for Tab Duplication, Reader Mode (`Cmd+Shift+R`), Reopen Closed Tab (`Cmd+Shift+T`), History Navigation, and Page Reload.
 
 ---
@@ -32,8 +32,8 @@ A dedicated native plugin and pre-configured application profile for the **Logit
 |     New Tab        |    Close Tab       |   Duplicate Tab    |
 +--------------------+--------------------+--------------------+
 |     [Key 3]        |     [Key 4]        |     [Key 5]        |
-|  Clean Reader      |  ACTIVE TAB TITLE  |    Toggle Native   |
-|   (De-Clutter)     |  (Giant Marquee)   |     Reader Mode    |
+|    Bookmarks       |  ACTIVE TAB TITLE  |    Toggle Native   |
+|     Sidebar        |  (Giant Marquee)   |     Reader Mode    |
 +--------------------+--------------------+--------------------+
 |     [Key 6]        |     [Key 7]        |     [Key 8]        |
 |   History Back     |    Reload Page     |   History Forward  |
@@ -45,7 +45,7 @@ A dedicated native plugin and pre-configured application profile for the **Logit
 | **0** | `New Tab` | Press | Open a new tab (`Cmd+T`) |
 | **1** | `Close Tab` | Press | Close current tab (`Cmd+W`) |
 | **2** | `Duplicate Tab` | Press | Duplicate active tab in background |
-| **3** | `Clean Reader` | Press | Strips modals, cookie banners & sticky overlays |
+| **3** | `Open Bookmarks` | Press | Toggle Bookmarks sidebar (`Cmd+Ctrl+1`) |
 | **4** | **Active Tab Display** | **Dynamic Key** | **Giant scrolling tab title; Tap to copy URL** |
 | **5** | `Toggle Reader Mode` | Press | Toggle native Safari Reader (`Cmd+Shift+R`) |
 | **6** | `History Back` | Press | Navigate back in history (`Cmd+[`) |
@@ -60,7 +60,7 @@ A dedicated native plugin and pre-configured application profile for the **Logit
 | **Roller Wheel** | Roll Up / Down | Smooth vertical webpage scrolling |
 | **Top-Left Button (0)** | Press | Reopen last closed tab (`Cmd+Shift+T`) |
 | **Top-Right Button (1)** | Press | Open new tab (`Cmd+T`) |
-| **Bottom-Left Button (2)** | Press | Clean Reader / De-Clutter script |
+| **Bottom-Left Button (2)** | Press | Toggle Bookmarks sidebar (`Cmd+Ctrl+1`) |
 | **Bottom-Right Button (3)** | Press | Actions Ring Overlay |
 
 ---
@@ -90,22 +90,15 @@ That's it! The script will:
 
 ---
 
-## 🔐 First-Time Permissions & Settings
+## 🔐 First-Time Permissions
 
-### 1. macOS Automation Permission
 When you first bring Safari into focus, macOS will prompt you to allow `LogiPluginService` to control Safari via AppleScript:
 1. Click **Allow** on the macOS system alert.
 2. If you missed or clicked "Don't Allow", enable it manually:
    - Go to **System Settings > Privacy & Security > Automation**.
    - Under **LogiPluginService**, ensure **Safari** is toggled **ON**.
 
-### 2. Safari: Allow JavaScript from Apple Events (Required for Clean Reader)
-Safari blocks external applications from running JavaScript inside tabs by default. To enable the **Clean Reader (De-Clutter)** feature and smooth DOM scrolling:
-1. Open **Safari** and go to **Settings...** (`Cmd+,`).
-2. Click the **Advanced** tab and check **"Show features for web developers"** (at the bottom).
-3. In the macOS top menu bar, click the newly visible **Develop** menu.
-4. Click **"Allow JavaScript from Apple Events"** (authenticate with Touch ID / password if prompted).
-Once enabled, Clean Reader will instantly strip modals, overlays, and clutter on command!
+*(No developer mode or JavaScript permissions are required. The plugin uses 100% native macOS automation).*
 
 ---
 
