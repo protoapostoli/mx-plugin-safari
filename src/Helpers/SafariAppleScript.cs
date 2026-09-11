@@ -179,13 +179,26 @@ end tell");
             RunAppleScript(@"tell application ""System Events"" to keystroke ""0"" using command down");
         }
 
-        public static void Scroll(Int32 diff)
+        public static void Scroll(Int32 direction, String mode = "gentle")
         {
-            var keyCode = diff > 0 ? 125 : 126; // 125: Down Arrow, 126: Up Arrow
-            var repeatCount = Math.Min(Math.Max(Math.Abs(diff), 1) * 3, 15);
+            if (String.Equals(mode, "page", StringComparison.OrdinalIgnoreCase))
+            {
+                var keyCode = direction > 0 ? 121 : 116; // 121: Page Down, 116: Page Up
+                RunAppleScript($@"tell application ""System Events"" to key code {keyCode}");
+                return;
+            }
+
+            var arrowCode = direction > 0 ? 125 : 126; // 125: Down Arrow, 126: Up Arrow
+            var repeatCount = mode switch
+            {
+                "fast" => 6,
+                "normal" => 3,
+                _ => 1 // "gentle"
+            };
+
             RunAppleScript($@"tell application ""System Events""
     repeat {repeatCount} times
-        key code {keyCode}
+        key code {arrowCode}
     end repeat
 end tell");
         }

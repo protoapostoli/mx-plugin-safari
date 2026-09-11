@@ -15,8 +15,8 @@ A dedicated native plugin and pre-configured application profile for the **Logit
 
 - 🔤 **Giant Marquee Active Tab Display**: The center LCD key displays the active Safari tab title in giant, vertically centered text with no clutter or border boxes. When titles exceed the key width, text scrolls smoothly in a readable loop.
 - 📋 **Tap-to-Copy URL**: Tap the center key anytime to copy the active webpage URL straight to your clipboard with visual green confirmation.
-- 🎛 **Precision Tab Scrubbing**: Rotate the aluminum dial to swiftly scrub and cycle between open Safari tabs.
-- 📜 **Smooth Roller Scrolling**: Roll the tactile wheel for natural vertical scrolling up and down long webpages.
+- 🎛 **Precision Tab Scrubbing & Anti-Spin Protection**: Rotate the aluminum dial to cycle open tabs with heavy deceleration and process throttling (no runaway spinning). Sensitivity presets: *Ultra Low* (default), *Low*, *Medium*, and *Direct*. Press dial to close tab.
+- 📜 **Smooth Roller Scrolling**: Roll the tactile wheel for natural vertical webpage scrolling with configurable sensitivity presets (*Gentle*, *Normal*, *Fast*, *Page by Page*).
 - 📑 **Instant Bookmarks & Reading List**: One-touch access to toggle your Safari Bookmarks sidebar (`Cmd+Ctrl+1`) and Reading List (`Cmd+Ctrl+2`).
 - ⚡ **Native Safari Shortcuts**: Dedicated keys for Tab Duplication, Reader Mode (`Cmd+Shift+R`), Reopen Closed Tab (`Cmd+Shift+T`), History Navigation, and Page Reload.
 
@@ -56,8 +56,8 @@ A dedicated native plugin and pre-configured application profile for the **Logit
 
 | Control | Action | Description |
 | :--- | :--- | :--- |
-| **Aluminum Dial** | Rotate Left / Right | Scrub & switch between open tabs |
-| **Roller Wheel** | Roll Up / Down | Smooth vertical webpage scrolling |
+| **Aluminum Dial** | Rotate Left / Right | Scrub & switch between open tabs (*Ultra Low* default; press to close tab) |
+| **Roller Wheel** | Roll Up / Down | Vertical webpage scrolling (*Gentle* default) |
 | **Top-Left Button (0)** | Press | Reopen last closed tab (`Cmd+Shift+T`) |
 | **Top-Right Button (1)** | Press | Open new tab (`Cmd+T`) |
 | **Bottom-Left Button (2)** | Press | Toggle Bookmarks sidebar (`Cmd+Ctrl+1`) |
