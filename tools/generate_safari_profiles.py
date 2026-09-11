@@ -354,9 +354,7 @@ def main():
     build_profile_70(tmp_72, "Loupedeck72", GUID_72_PROFILE, GUID_72_WS, GUID_72_PAGE)
 
     dest_dirs = [
-        BASE_DIR / "profiles" / "safari",
-        BASE_DIR / "plugins" / "safari-controller" / "package" / "profiles",
-        BASE_DIR / "plugins" / "safari-controller" / "dist" / "Safari" / "profiles"
+        BASE_DIR / "src" / "package" / "profiles",
     ]
 
     for d in dest_dirs:

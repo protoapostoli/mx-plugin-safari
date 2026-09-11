@@ -1,5 +1,0 @@
-# Assets configuration for Logi Actions SDK build
-- name: icons
-  path: assets/keypad-icons/*
-- name: symbols
-  path: assets/action-symbols/*
