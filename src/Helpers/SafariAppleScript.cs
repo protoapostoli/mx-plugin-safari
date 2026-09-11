@@ -28,7 +28,21 @@ namespace Loupedeck.SafariPlugin.Helpers
                 }
 
                 var output = process.StandardOutput.ReadToEnd().Trim();
+                var error = process.StandardError.ReadToEnd().Trim();
                 process.WaitForExit(1500);
+
+                if (!String.IsNullOrEmpty(error))
+                {
+                    if (error.Contains("Allow JavaScript from Apple Events") || error.Contains("(8)"))
+                    {
+                        PluginLog.Warning("Safari blocked JavaScript execution: Please enable 'Develop > Allow JavaScript from Apple Events' in Safari.");
+                    }
+                    else
+                    {
+                        PluginLog.Warning($"AppleScript stderr: {error}");
+                    }
+                }
+
                 return output;
             }
             catch (Exception ex)

@@ -90,14 +90,22 @@ That's it! The script will:
 
 ---
 
-## 🔐 First-Time Permissions
+## 🔐 First-Time Permissions & Settings
 
+### 1. macOS Automation Permission
 When you first bring Safari into focus, macOS will prompt you to allow `LogiPluginService` to control Safari via AppleScript:
-
 1. Click **Allow** on the macOS system alert.
-2. If you accidentally clicked "Don't Allow", enable it manually:
+2. If you missed or clicked "Don't Allow", enable it manually:
    - Go to **System Settings > Privacy & Security > Automation**.
    - Under **LogiPluginService**, ensure **Safari** is toggled **ON**.
+
+### 2. Safari: Allow JavaScript from Apple Events (Required for Clean Reader)
+Safari blocks external applications from running JavaScript inside tabs by default. To enable the **Clean Reader (De-Clutter)** feature and smooth DOM scrolling:
+1. Open **Safari** and go to **Settings...** (`Cmd+,`).
+2. Click the **Advanced** tab and check **"Show features for web developers"** (at the bottom).
+3. In the macOS top menu bar, click the newly visible **Develop** menu.
+4. Click **"Allow JavaScript from Apple Events"** (authenticate with Touch ID / password if prompted).
+Once enabled, Clean Reader will instantly strip modals, overlays, and clutter on command!
 
 ---
 
